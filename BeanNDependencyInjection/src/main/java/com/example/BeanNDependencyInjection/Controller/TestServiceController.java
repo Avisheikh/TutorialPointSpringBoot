@@ -1,6 +1,7 @@
 package com.example.BeanNDependencyInjection.Controller;
 
 import com.example.BeanNDependencyInjection.Entity.Product;
+import com.example.BeanNDependencyInjection.Exception.ProductNotFoundException;
 import org.apache.coyote.Response;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.springframework.http.HttpRequest;
@@ -49,6 +50,12 @@ public class TestServiceController
     @RequestMapping(value = "/update_product/{id}", method = RequestMethod.PUT)
     public ResponseEntity<Object> updateProduct(@PathVariable("id") String id, @RequestBody Product product)
     {
+
+        if(!productRepo.containsKey(id))
+        {
+            throw new ProductNotFoundException();
+        }
+
         productRepo.remove(id);
         product.setId(id);
         System.out.println(product.getId());
@@ -59,6 +66,10 @@ public class TestServiceController
     @RequestMapping(value = "/delete_product/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<Object> removeProduct(@PathVariable("id") String id)
     {
+        if(!productRepo.containsKey(id))
+        {
+            throw new ProductNotFoundException();
+        }
         System.out.println(productRepo.get(id).getId());
         productRepo.remove(id);
         return  new ResponseEntity<>("Product is deleted succesfully", HttpStatus.OK);
