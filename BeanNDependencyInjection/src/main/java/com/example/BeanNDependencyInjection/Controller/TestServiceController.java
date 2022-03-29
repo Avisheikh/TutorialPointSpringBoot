@@ -2,14 +2,9 @@ package com.example.BeanNDependencyInjection.Controller;
 
 import com.example.BeanNDependencyInjection.Entity.Product;
 import com.example.BeanNDependencyInjection.Exception.ProductNotFoundException;
-import org.apache.coyote.Response;
-import org.apache.logging.log4j.message.ReusableMessage;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,6 +31,12 @@ public class TestServiceController
     public ResponseEntity<Object> getProduct()
     {
         return new ResponseEntity<>(productRepo.values(), HttpStatus.OK);
+    }
+
+    @RequestMapping("/get_product")
+    public ResponseEntity<Object> getNewProduct()
+    {
+        return new ResponseEntity<>(productRepo.values() + "new product", HttpStatus.OK);
     }
 
     @RequestMapping(value = "/create_product", method = RequestMethod.POST)
