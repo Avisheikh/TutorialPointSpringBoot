@@ -1,12 +1,13 @@
 package com.example.BeanNDependencyInjection.Controller;
 
 import com.example.BeanNDependencyInjection.Entity.Product;
+import org.apache.coyote.Response;
+import org.apache.logging.log4j.message.ReusableMessage;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,6 +45,25 @@ public class TestServiceController
         return new ResponseEntity<>("Product is created successfully", HttpStatus.CREATED);
 
     }
+
+    @RequestMapping(value = "/update_product/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<Object> updateProduct(@PathVariable("id") String id, @RequestBody Product product)
+    {
+        productRepo.remove(id);
+        product.setId(id);
+        System.out.println(product.getId());
+        productRepo.put(id, product);
+        return new ResponseEntity<>("Product is update successfully", HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/delete_product/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<Object> removeProduct(@PathVariable("id") String id)
+    {
+        System.out.println(productRepo.get(id).getId());
+        productRepo.remove(id);
+        return  new ResponseEntity<>("Product is deleted succesfully", HttpStatus.OK);
+    }
+
 
 
     
