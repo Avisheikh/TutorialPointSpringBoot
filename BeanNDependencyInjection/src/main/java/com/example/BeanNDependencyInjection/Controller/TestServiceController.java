@@ -27,6 +27,12 @@ public class TestServiceController
         productRepo.put(water.getId(), water);
     }
 
+    @RequestMapping("/")
+    public String hello()
+    {
+        return "Hello World";
+    }
+
     @RequestMapping("/product")
     public ResponseEntity<Object> getProduct()
     {

@@ -26,14 +26,14 @@ public class ProductServiceInterceptorAppConfig extends WebMvcConfigurerAdapter
 
         // Old Login url, no longer use
         // use old url interceptor to redirect to a new  URL.
-        registry.addInterceptor(oldProductServiceInterceptor)
-                .excludePathPatterns("/products");
-
-        // This interceptor apply to URLlike /admin/
-        // Exclude /admin/oldLogin
-        registry.addInterceptor(adminInterceptor)
-                .addPathPatterns("/admin/*")
-                .excludePathPatterns("/admin/oldLogin");
+//        registry.addInterceptor(oldProductServiceInterceptor)
+//                .excludePathPatterns("/products");
+//
+//        // This interceptor apply to URLlike /admin/
+//        // Exclude /admin/oldLogin
+//        registry.addInterceptor(adminInterceptor)
+//                .addPathPatterns("/admin/*")
+//                .excludePathPatterns("/admin/oldLogin");
     }
 
 }
