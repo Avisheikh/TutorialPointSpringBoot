@@ -1,11 +1,21 @@
 package com.practise.register.serviceInterface;
 
+import com.practise.register.dto.TempUserDTO;
+import com.practise.register.dto.TempUserRequest;
 import com.practise.register.model.TempUser;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 
 public interface UserServiceInterface
 {
-    ResponseEntity<Object> createTempUser(TempUser requestTempUser);
+    List<TempUser> getAllTempUser();
+
+    List<TempUserDTO> getAllTempUserDTO();
+
+    ResponseEntity<Object> createTempUserDTO(TempUserRequest requestTempUser);
+
+    ResponseEntity<Object> saveUser(int id);
 }

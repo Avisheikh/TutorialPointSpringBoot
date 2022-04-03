@@ -5,8 +5,8 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "temp_user")
-public class TempUser
+@Table(name = "user")
+public class User
 {
 
     @Id
@@ -32,15 +32,15 @@ public class TempUser
     private String isApproved;
 
     @Column(name = "created_date")
-    @CreationTimestamp
     private Date createdDate;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "tempUser")
-    private User user;
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name="temp_user_id")
+    private TempUser tempUser;
 
-    public TempUser(){}
+    public User(){}
 
-    public TempUser(String userName, String email, int phoneNumber, int pan, String password, String isApproved, Date createdDate) {
+    public User(String userName, String email, int phoneNumber, int pan, String password, String isApproved, Date createdDate) {
         this.userName = userName;
         this.email = email;
         this.phoneNumber = phoneNumber;
@@ -50,6 +50,13 @@ public class TempUser
         this.createdDate = createdDate;
     }
 
+    public TempUser getTempUser() {
+        return tempUser;
+    }
+
+    public void setTempUser(TempUser tempUser) {
+        this.tempUser = tempUser;
+    }
 
     public int getId() {
         return id;
