@@ -4,13 +4,12 @@ import com.practise.register.dto.TempUserDTO;
 import com.practise.register.dto.TempUserRequest;
 import com.practise.register.exception.DataIntegrityViolationException;
 import com.practise.register.exception.EmailExistException;
-import com.practise.register.model.ResponseDto;
+import com.practise.register.dto.ResponseDto;
 import com.practise.register.model.TempUser;
 import com.practise.register.model.User;
 import com.practise.register.repo.TempUserRepo;
 import com.practise.register.repo.UserRepo;
 import com.practise.register.serviceInterface.UserServiceInterface;
-import com.sun.xml.bind.v2.TODO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -71,24 +70,18 @@ public class UserService implements UserServiceInterface
         ResponseDto responseDto=new ResponseDto();
         TempUser tempUser = null;
 
-        if(tempUserRepo.checkEmailExist(requestTempUser.getEmail()) == 1)
+        if(tempUserRepo.checkEmailExist(requestTempUser.getEmail()) == 1 & tempUserRepo.checkEmailExist(requestTempUser.getEmail()) == 1)
         {
-//                responseDto.setResponseMessage("Email already exists");
-//                responseDto.setResponseStatus(false);
-//                return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
-
             throw new EmailExistException("Username has already exists. Username should be unique");
-
         }
         try {
 
             // created temp user class object
             //TODO check using phone number and email if it is already exit or not
 
-
-            if(tempUserRepo.checkPasswordExist(requestTempUser.getPassword()) == 1)
+            if(tempUserRepo.checkPhoneNumberExist(requestTempUser.getPhoneNumber()) == 1 & userRepo.checkPhoneNumberExist(requestTempUser.getPhoneNumber()) == 1)
             {
-                responseDto.setResponseMessage("Password already exists");
+                responseDto.setResponseMessage("Phone number already exists");
                 responseDto.setResponseStatus(false);
                 return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
             }
@@ -104,6 +97,7 @@ public class UserService implements UserServiceInterface
                 tempUser.setPan(requestTempUser.getPan());
                 tempUser.setPassword(requestTempUser.getPassword());
                 tempUser.setIsApproved("false");
+                tempUser.setCreatedBy(requestTempUser.getCreatedBy());
 
                 // save to database
                 tempUserRepo.save(tempUser);
@@ -117,7 +111,6 @@ public class UserService implements UserServiceInterface
             responseDto.setResponseStatus(false);
             System.out.println(e);
         }
-
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
@@ -126,16 +119,25 @@ public class UserService implements UserServiceInterface
     {
 
         User user = new User();
+        ResponseDto responseDto = new ResponseDto();
         userName = "abishek";
 
         //TODO use hibernate query instead of predefine query
+        Optional<TempUser> getTempUser = tempUserRepo.customFindById(id);
+        System.out.println(getTempUser.get().getCreatedBy());
+        System.out.println(getTempUser.get().getCreatedBy().equals(userName));
+
         //TODO check both checker and maker
-        //TODO add approved true when data save in user on temp table
+        if(getTempUser.get().getCreatedBy().equals(userName))
+        {
+            responseDto.setResponseMessage("Could not approved because the checker and maker are same");
+            responseDto.setResponseStatus(false);
+            return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
+        }
 
         try
         {
-            Optional<TempUser> getTempUser = tempUserRepo.findById(id);
-
+//            Optional<TempUser> getTempUser = tempUserRepo.findById(id);
             user.setUserName(getTempUser.get().getUserName());
             user.setPassword(getTempUser.get().getPassword());
             user.setEmail(getTempUser.get().getEmail());
@@ -146,9 +148,10 @@ public class UserService implements UserServiceInterface
             user.setTempUser(getTempUser.get());
             user.setCreatedBy(userName);
 
+            // TODO add approved true when data save in user on temp table
+            getTempUser.get().setIsApproved("true");
+
             userRepo.save(user);
-
-
 
         }
         catch (Exception e)
@@ -172,7 +175,6 @@ public class UserService implements UserServiceInterface
         try
         {
             getTempUser = new TempUser();
-
             getTempUser.setUserName(tempUserRequest.getUserName());
             getTempUser.setEmail(tempUserRequest.getEmail());
             getTempUser.setPhoneNumber(tempUserRequest.getPhoneNumber());

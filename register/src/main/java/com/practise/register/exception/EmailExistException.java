@@ -4,10 +4,11 @@ import org.springframework.http.HttpStatus;
 
 public class EmailExistException extends RuntimeException
 {
-//    private String message;
+    private String message;
 
     public EmailExistException(String message) {
         super(message);
+        this.message=message;
     }
 
     public HttpStatus getHttpStatus() {
@@ -15,11 +16,11 @@ public class EmailExistException extends RuntimeException
     }
 
 
-//    public String getMessage() {
-//        return message;
-//    }
-//
-//    public void setMessage(String message) {
-//        this.message = message;
-//    }
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 }

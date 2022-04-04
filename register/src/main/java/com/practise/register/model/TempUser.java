@@ -35,21 +35,11 @@ public class TempUser
     @CreationTimestamp
     private Date createdDate;
 
+    @Column(name = "created_by")
+    private String createdBy;
+
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "tempUser")
     private User user;
-
-    public TempUser(){}
-
-    public TempUser(String userName, String email, int phoneNumber, int pan, String password, String isApproved, Date createdDate) {
-        this.userName = userName;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-        this.pan = pan;
-        this.password = password;
-        this.isApproved = isApproved;
-        this.createdDate = createdDate;
-    }
-
 
     public int getId() {
         return id;
@@ -57,6 +47,14 @@ public class TempUser
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
     }
 
     public String getUserName() {

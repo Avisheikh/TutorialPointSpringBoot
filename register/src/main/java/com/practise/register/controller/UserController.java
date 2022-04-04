@@ -83,7 +83,6 @@ public class UserController
     public ResponseEntity<Object> createTempUserDTO(@Valid @RequestBody TempUserRequest tempUser, BindingResult bindingResult,HttpServletResponse response)
     {
 
-
         ResponseEntity<Object> responsedetails = null;
 
         if(bindingResult.hasErrors())
