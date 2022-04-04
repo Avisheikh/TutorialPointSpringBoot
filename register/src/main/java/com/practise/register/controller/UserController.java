@@ -2,6 +2,7 @@ package com.practise.register.controller;
 
 import com.practise.register.dto.TempUserDTO;
 import com.practise.register.dto.TempUserRequest;
+import com.practise.register.exception.DataIntegrityViolationException;
 import com.practise.register.model.TempUser;
 import com.practise.register.serviceInterface.UserServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +11,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
+
 
 @RestController
 public class UserController
@@ -23,10 +23,40 @@ public class UserController
     @Autowired
     private UserServiceInterface userServiceInterface;
 
-    @RequestMapping(value = "/approve_user", method = RequestMethod.GET)
-    public void approveUser()
+    // approve update data
+    @RequestMapping(value = "/approve_update/{id}", method = RequestMethod.GET)
+    public ResponseEntity<Object> approveUpdate(@PathVariable int id, String userName)
     {
-        userServiceInterface.saveUser(3);
+        System.out.println(id);
+        return userServiceInterface.updateUser(id,userName);
+
+    }
+
+    // Update data to temp user
+    @RequestMapping(value = "/update_user/{id}", method = RequestMethod.POST)
+    public ResponseEntity<Object> updateTempUser(@RequestBody TempUserRequest tempUserRequest, @PathVariable int id)
+    {
+        System.out.println(tempUserRequest.getEmail());
+        return userServiceInterface.updateTempUser(id, tempUserRequest);
+    }
+
+
+    @RequestMapping(value = "/approve_user/{id}", method = RequestMethod.GET)
+    public ResponseEntity<Object> approveUser(@PathVariable int id, String userName)
+    {
+        ResponseEntity saveUser;
+
+        try
+        {
+            saveUser = userServiceInterface.saveUser(id,userName);
+        }
+
+        catch (Exception e)
+        {
+            throw new DataIntegrityViolationException();
+        }
+
+        return saveUser;
     }
 
     // getting all temp user using temp no dto
@@ -54,7 +84,7 @@ public class UserController
     {
 
 
-        ResponseEntity<Object> user = null;
+        ResponseEntity<Object> responsedetails = null;
 
         if(bindingResult.hasErrors())
         {
@@ -72,18 +102,9 @@ public class UserController
             return  new ResponseEntity<Object>(errorMessage, HttpStatus.BAD_REQUEST);
         }
 
-        try
-        {
-            user = userServiceInterface.createTempUserDTO(tempUser);
-        }
+            responsedetails = userServiceInterface.createTempUserDTO(tempUser);
 
-        catch (Exception e)
-        {
-            System.out.println(e);
-            return  new ResponseEntity<Object>(e, HttpStatus.BAD_REQUEST);
-        }
-
-        return user;
+        return responsedetails;
     }
 
 

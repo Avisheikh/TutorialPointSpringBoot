@@ -17,5 +17,9 @@ public interface UserServiceInterface
 
     ResponseEntity<Object> createTempUserDTO(TempUserRequest requestTempUser);
 
-    ResponseEntity<Object> saveUser(int id);
+    ResponseEntity<Object> saveUser(int id, String userName);
+
+    ResponseEntity<Object> updateTempUser(int id, TempUserRequest tempUserRequest);
+
+    ResponseEntity<Object> updateUser(int id, String userName);
 }

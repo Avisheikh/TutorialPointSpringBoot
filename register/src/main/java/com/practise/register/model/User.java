@@ -34,6 +34,9 @@ public class User
     @Column(name = "created_date")
     private Date createdDate;
 
+    @Column(name = "created_by")
+    private String createdBy;
+
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name="temp_user_id")
     private TempUser tempUser;
@@ -56,6 +59,14 @@ public class User
 
     public void setTempUser(TempUser tempUser) {
         this.tempUser = tempUser;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
     }
 
     public int getId() {
