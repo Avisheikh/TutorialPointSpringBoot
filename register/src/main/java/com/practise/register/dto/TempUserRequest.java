@@ -27,6 +27,16 @@ public class TempUserRequest
     @NotNull(message = "Password is missing.")
     private String password;
 
+    @NotNull(message = "Created by name is missing.")
+    private String createdBy;
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
 
     public String getUserName() {
         return userName;
@@ -67,4 +77,5 @@ public class TempUserRequest
     public void setPassword(String password) {
         this.password = password;
     }
+
 }

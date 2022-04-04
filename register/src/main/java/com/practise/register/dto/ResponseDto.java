@@ -1,4 +1,4 @@
-package com.practise.register.model;
+package com.practise.register.dto;
 
 import lombok.Data;
 

@@ -8,6 +8,15 @@ public class TempUserDTO
     private int phoneNumber;
     private int pan;
     private String password;
+    private String createdBy;
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
 
     public int getUserId() {
         return userId;
