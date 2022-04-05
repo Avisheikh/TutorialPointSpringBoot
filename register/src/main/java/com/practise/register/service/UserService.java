@@ -137,7 +137,7 @@ public class UserService implements UserServiceInterface
 
         try
         {
-//            Optional<TempUser> getTempUser = tempUserRepo.findById(id);
+
             user.setUserName(getTempUser.get().getUserName());
             user.setPassword(getTempUser.get().getPassword());
             user.setEmail(getTempUser.get().getEmail());
