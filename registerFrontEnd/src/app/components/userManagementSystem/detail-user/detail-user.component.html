@@ -1,0 +1,15 @@
+<div class="container mt-5 d-flex justify-content-center">
+  <ul class="list-group">
+    <li class="list-group-item">User Name: {{tempUserResponse.userName}}</li>
+    <li class="list-group-item">Email: {{tempUserResponse.email}}</li>
+    <li class="list-group-item">Pan: {{tempUserResponse.pan}}</li>
+    <li class="list-group-item">Phone Number:{{tempUserResponse.phoneNumber}}</li>
+    <li class="list-group-item">Create Date: {{tempUserResponse.createdDate}}</li>
+  </ul> <br>
+</div>
+
+<div class="container mt-3 d-flex justify-content-center">
+  <input class="btn btn-success m-3" value="Approve" (click)="saveUser()"/>
+</div>
+
+

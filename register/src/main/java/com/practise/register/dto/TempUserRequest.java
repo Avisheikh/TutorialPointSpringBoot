@@ -27,7 +27,7 @@ public class TempUserRequest
     @NotNull(message = "Password is missing.")
     private String password;
 
-    @NotNull(message = "Created by name is missing.")
+
     private String createdBy;
 
     public String getCreatedBy() {

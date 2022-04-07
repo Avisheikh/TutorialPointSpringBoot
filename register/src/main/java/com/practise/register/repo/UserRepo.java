@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface UserRepo extends JpaRepository<User, Integer>
 {
@@ -15,4 +17,6 @@ public interface UserRepo extends JpaRepository<User, Integer>
     @Query(value = "select exists(select * from user t where t.phone_number= :phone_number)",nativeQuery = true)
     int checkPhoneNumberExist(@Param("phone_number") int phoneNumber);
 
+    @Query(value = "select * from user u where u.email= :email", nativeQuery = true)
+    Optional<User> customFindByEmail(@Param("email") String email);
 }

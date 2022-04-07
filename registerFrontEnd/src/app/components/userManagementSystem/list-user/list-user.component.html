@@ -1,0 +1,26 @@
+<div class="container m-5" style="position:relative; left: 14%">
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">User Name</th>
+        <th scope="col">Email</th>
+        <th scope="col">Phone Number</th>
+        <th scope="col">Pan</th>
+        <th scope="col">Password</th>
+        <th scope="col">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of tempUser">
+        <td>{{item.userId}}</td>
+        <td>{{item.userName}}</td>
+        <td>{{item.email}}</td>
+        <td>{{item.phoneNumber}}</td>
+        <td>{{item.pan}}</td>
+        <td>{{item.password}}</td>
+        <td><a [routerLink]="['/detail-temp-user',item.userId]"><i class="fa fa-eye text-dark" aria-hidden="true" style="cursor: pointer"></i></a></td>
+      </tr>
+    </tbody>
+  </table>
+</div>

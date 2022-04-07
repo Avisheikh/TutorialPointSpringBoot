@@ -1,6 +1,6 @@
 package com.practise.register.dto;
 
-public class TempUserDTO
+public class TempUserDto
 {
     private int userId;
     private String userName;
