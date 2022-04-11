@@ -13,4 +13,5 @@ public class PathConstant {
     public static final String createModifyUser = "/create_modify_user/{id}";
     public static final String listModifyUser = "/list_modify_user";
     public static final String getModifyUserById = "/get_modify_user/{id}";
+    public static final String approveModifyUser = "/approve_modify_user/{id}";
 }

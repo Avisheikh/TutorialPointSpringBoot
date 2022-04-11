@@ -37,4 +37,6 @@ public interface UserService
     ResponseEntity<ModifyUserResponse> getModifyUser();
 
     ResponseEntity<Object> modifyUserByID(int id);
+
+    ResponseEntity<Object> saveModifyUser(int id);
 }

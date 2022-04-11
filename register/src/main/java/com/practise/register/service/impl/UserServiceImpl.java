@@ -1,4 +1,4 @@
-package com.practise.register.service_impl;
+package com.practise.register.service.impl;
 
 import com.practise.register.dto.*;
 import com.practise.register.exception.DataIntegrityViolationException;
@@ -116,14 +116,12 @@ public class UserServiceImpl implements com.practise.register.service.UserServic
             logger.error("User has not been logged in");
             throw new UserNotLoggedIn();
         }
-
         // check email is unique or not
         if(tempUserRepo.checkEmailExist(requestTempUser.getEmail()) == 1 || userRepo.checkEmailExist(requestTempUser.getEmail()) == 1)
         {
             logger.error("Email was not unique.");
             throw new EmailExistException("Email has already exists. Email should be unique");
         }
-
         // check phone number is unique or not
         else if(tempUserRepo.checkPhoneNumberExist(requestTempUser.getPhoneNumber()) == 1 || userRepo.checkPhoneNumberExist(requestTempUser.getPhoneNumber()) == 1)
         {
@@ -132,39 +130,45 @@ public class UserServiceImpl implements com.practise.register.service.UserServic
             logger.error("Phone number was not unique.");
             return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
         }
-
         else
         {
             try {
-
                 // created temp user class object
                 //TODO check using phone number and email if it is already exit or not
-                tempUser = new TempUser();
 
                 // setting the value
-                tempUser.setUserName(requestTempUser.getUserName());
-                tempUser.setEmail(requestTempUser.getEmail());
-                tempUser.setPhoneNumber(requestTempUser.getPhoneNumber());
-                tempUser.setPan(requestTempUser.getPan());
-                tempUser.setPassword(passwordEncoder.encode(requestTempUser.getPassword()));
-                tempUser.setIsApproved("false");
-                tempUser.setCreatedBy("abisehk");
+                tempUser = setterForTempUser(requestTempUser);
 
                 // save to database
                 tempUserRepo.save(tempUser);
-                responseDto.setResponseMessage("Registration Success, Waiting for Approval");
-                responseDto.setResponseStatus(true);
                 logger.info("User has been created.");
-
+                return new ResponseEntity<>(serverResponse("Registration Success, Waiting for Approval", true), HttpStatus.CREATED);
             }
             catch (Exception e)
             {
-                responseDto.setResponseMessage("Unable to process your request");
-                responseDto.setResponseStatus(false);
                 logger.error(e.getMessage());
+                return new ResponseEntity<>(serverResponse("Unable to process your request", false), HttpStatus.BAD_REQUEST);
             }
         }
-        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+    }
+
+    private ResponseDto serverResponse(String message, boolean isSuccess) {
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setResponseMessage(message);
+        responseDto.setResponseStatus(isSuccess);
+        return responseDto;
+    }
+
+    private TempUser setterForTempUser(TempUserRequest requestTempUser) {
+        TempUser tempUser = new TempUser();
+        tempUser.setUserName(requestTempUser.getUserName());
+        tempUser.setEmail(requestTempUser.getEmail());
+        tempUser.setPhoneNumber(requestTempUser.getPhoneNumber());
+        tempUser.setPan(requestTempUser.getPan());
+        tempUser.setPassword(passwordEncoder.encode(requestTempUser.getPassword()));
+        tempUser.setIsApproved("false");
+        tempUser.setCreatedBy("abisehk");
+        return tempUser;
     }
 
     // map temp user response variables to temp user varibale
@@ -184,6 +188,10 @@ public class UserServiceImpl implements com.practise.register.service.UserServic
     // create convertDataIntoDTO() method that returns UserLocationDTO
     private TempUserDto convertDataIntoDTO(TempUser tempUser)
     {
+        return getTempUserDto(tempUser);
+    }
+
+    private TempUserDto getTempUserDto(TempUser tempUser) {
         // create instance of our temp user dto class
         TempUserDto dto = new TempUserDto();
 
@@ -332,7 +340,7 @@ public class UserServiceImpl implements com.practise.register.service.UserServic
     @Override
     public List<TempUser> getAllTempUser()
     {
-        return (List<TempUser>) tempUserRepo.findAll();
+        return tempUserRepo.findAll();
 
     }
 
@@ -340,13 +348,11 @@ public class UserServiceImpl implements com.practise.register.service.UserServic
     public ResponseEntity<Object> updateTempUser(int id, TempUserRequest tempUserRequest)
     {
 
-        TempUser getTempUser = null;
-
-        this.getUserID = id;
+        TempUser getTempUser = tempUserRepo.findById(id).orElse(null);
+//        this.getUserID = id;
 
         try
         {
-            getTempUser = new TempUser();
             getTempUser.setUserName(tempUserRequest.getUserName());
             getTempUser.setEmail(tempUserRequest.getEmail());
             getTempUser.setPhoneNumber(tempUserRequest.getPhoneNumber());
@@ -479,5 +485,36 @@ public class UserServiceImpl implements com.practise.register.service.UserServic
 
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
+
+    @Override
+    public ResponseEntity<Object> saveModifyUser(int id)
+    {
+
+        ModifyUser modifyUser = modifyUserRepo.customFindById(id);
+        User user = userRepo.customFindById(modifyUser.getUser().getId());
+        ResponseDto responseDto = new ResponseDto();
+
+        try
+        {
+            user.setUserName(modifyUser.getUserName());
+            user.setEmail(modifyUser.getEmail());
+            user.setPhoneNumber(modifyUser.getPhoneNumber());
+            user.setPan(modifyUser.getPan());
+
+            userRepo.save(user);
+            responseDto.setResponseMessage("User has been successfully updated");
+            responseDto.setResponseStatus(true);
+        }
+        catch (Exception exp)
+        {
+            logger.error(exp.getMessage());
+            responseDto.setResponseStatus(false);
+            responseDto.setResponseMessage("User can not be update");
+        }
+
+
+        return new ResponseEntity<>(responseDto,HttpStatus.OK);
+    }
+
 
 }

@@ -106,6 +106,13 @@ public class UserController
         return userServiceInterface.modifyUserByID(id);
     }
 
+    // approve update user
+    @RequestMapping(value = PathConstant.approveModifyUser, method = RequestMethod.GET)
+    public ResponseEntity<Object> approveUpdateUser(@PathVariable int id)
+    {
+        return userServiceInterface.saveModifyUser(id);
+    }
+
     // approve update data
     @RequestMapping(value = "/approve_update/{id}", method = RequestMethod.GET)
     public ResponseEntity<Object> approveUpdate(@PathVariable int id, String userName)
