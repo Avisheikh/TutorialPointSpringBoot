@@ -89,7 +89,21 @@ public class UserController
     @RequestMapping(value = PathConstant.createModifyUser, method = RequestMethod.POST)
     public ResponseEntity<Object> createModifyUser(@RequestBody ModifyUserRequest modifyUserRequest,@PathVariable int id)
     {
-        return userServiceInterface.modifyUser(modifyUserRequest);
+        return userServiceInterface.modifyUser(modifyUserRequest, id);
+    }
+
+    // get all modify user list
+    @RequestMapping(value = PathConstant.listModifyUser, method = RequestMethod.GET)
+    public ResponseEntity<ModifyUserResponse> modifyUserList()
+    {
+        return userServiceInterface.getModifyUser();
+    }
+
+    // get detail view of modify user by id
+    @RequestMapping(value = PathConstant.getModifyUserById, method = RequestMethod.GET)
+    public ResponseEntity<Object> getModifyUserByID(@PathVariable int id)
+    {
+        return userServiceInterface.modifyUserByID(id);
     }
 
     // approve update data

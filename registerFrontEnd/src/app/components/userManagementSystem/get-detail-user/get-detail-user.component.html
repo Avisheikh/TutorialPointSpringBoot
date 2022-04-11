@@ -11,7 +11,7 @@
 
 
 <div class="container mt-5 d-flex justify-content-center">
-  <form>
+  <form [formGroup]="updateUser"  (ngSubmit)="onModify()" >
     <h3>UPDATE USER</h3>
     <div class="form-group mt-4">
       <label>ID: {{getUserDetail.id}} </label>
@@ -19,22 +19,22 @@
 
     <div class="form-group mt-4">
       <label>User Name:</label>
-      <input class="form-control mt-2" value="{{getUserDetail.userName}}">
+      <input class="form-control mt-2" value="{{getUserDetail.userName}}" formControlName="userName" required>
     </div>
 
     <div class="form-group mt-4">
       <label>Email: </label>
-      <input class="form-control mt-2" value="{{getUserDetail.email}}">
+      <input class="form-control mt-2" value="{{getUserDetail.email}}" formControlName="email">
     </div>
 
     <div class="form-group mt-4">
       <label>Phone Number: </label>
-      <input class="form-control mt-2" value="{{getUserDetail.phoneNumber}}">
+      <input class="form-control mt-2" value="{{getUserDetail.phoneNumber}}" formControlName="phoneNumber">
     </div>
 
     <div class="form-group mt-2">
       <label>Pan: </label>
-      <input class="form-control mt-2" value="{{getUserDetail.pan}}">
+      <input class="form-control mt-2" value="{{getUserDetail.pan}}" formControlName="pan">
     </div>
 
     <div class="form-group mt-3">

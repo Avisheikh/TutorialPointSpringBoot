@@ -32,5 +32,9 @@ public interface UserService
 
     ResponseEntity<Object> logout();
 
-    ResponseEntity<Object> modifyUser(ModifyUserRequest modifyUserRequest);
+    ResponseEntity<Object> modifyUser(ModifyUserRequest modifyUserRequest, int id);
+
+    ResponseEntity<ModifyUserResponse> getModifyUser();
+
+    ResponseEntity<Object> modifyUserByID(int id);
 }

@@ -1,9 +1,11 @@
 package com.practise.register.dto;
 
 import com.practise.register.model.User;
+import lombok.Data;
 
 import java.util.Date;
 
+@Data
 public class ModifyUserRequest
 {
 

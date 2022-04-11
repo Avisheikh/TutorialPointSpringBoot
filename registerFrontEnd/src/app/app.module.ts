@@ -11,6 +11,8 @@ import { DetailUserComponent } from './components/userManagementSystem/detail-us
 import { LoginComponent } from './components/userManagementSystem/login/login.component';
 import { GetListUserComponent } from './components/userManagementSystem/get-list-user/get-list-user.component';
 import { GetDetailUserComponent } from './components/userManagementSystem/get-detail-user/get-detail-user.component';
+import { ListModifyUserComponent } from './components/userManagementSystem/list-modify-user/list-modify-user.component';
+import { DetailModifyUserComponent } from './components/userManagementSystem/detail-modify-user/detail-modify-user.component';
 
 
 
@@ -22,7 +24,9 @@ import { GetDetailUserComponent } from './components/userManagementSystem/get-de
     DetailUserComponent,
     LoginComponent,
     GetListUserComponent,
-    GetDetailUserComponent
+    GetDetailUserComponent,
+    ListModifyUserComponent,
+    DetailModifyUserComponent
   ],
   imports: [
     HttpClientModule,

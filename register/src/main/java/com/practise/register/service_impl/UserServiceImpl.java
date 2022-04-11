@@ -5,9 +5,11 @@ import com.practise.register.exception.DataIntegrityViolationException;
 import com.practise.register.exception.EmailExistException;
 import com.practise.register.exception.UserNotLoggedIn;
 import com.practise.register.model.Authentication;
+import com.practise.register.model.ModifyUser;
 import com.practise.register.model.TempUser;
 import com.practise.register.model.User;
 import com.practise.register.repo.AuthenticationRepo;
+import com.practise.register.repo.ModifyUserRepo;
 import com.practise.register.repo.TempUserRepo;
 import com.practise.register.repo.UserRepo;
 import org.slf4j.Logger;
@@ -30,6 +32,9 @@ public class UserServiceImpl implements com.practise.register.service.UserServic
 
     @Autowired
     private UserRepo userRepo;
+
+    @Autowired
+    private ModifyUserRepo modifyUserRepo;
 
     @Autowired
     private AuthenticationRepo authenticationRepo;
@@ -385,11 +390,72 @@ public class UserServiceImpl implements com.practise.register.service.UserServic
     }
 
     @Override
-    public ResponseEntity<Object> modifyUser(ModifyUserRequest modifyUserRequest)
+    public ResponseEntity<Object> modifyUser(ModifyUserRequest modifyUserRequest, int id)
     {
-        return new ResponseEntity<>("check", HttpStatus.OK);
+
+        ModifyUser modifyUser = new ModifyUser();
+        ResponseDto responseDto = new ResponseDto();
+        User user = userRepo.customFindById(id);
+
+        try
+        {
+            modifyUser.setUserName(modifyUserRequest.getUserName());
+            modifyUser.setEmail(modifyUserRequest.getEmail());
+            modifyUser.setPhoneNumber(modifyUserRequest.getPhoneNumber());
+            modifyUser.setPan(modifyUserRequest.getPan());
+            modifyUser.setUser(user);
+            modifyUser.setIsApproved("false");
+
+            responseDto.setResponseMessage("Approved the modification of the user.");
+            responseDto.setResponseStatus(true);
+
+            modifyUserRepo.save(modifyUser);
+        }
+        catch (Exception exp)
+        {
+            logger.error(exp.getMessage());
+            responseDto.setResponseMessage(exp.getMessage());
+            responseDto.setResponseStatus(false);
+            return new ResponseEntity<>(responseDto, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
+    @Override
+    public ResponseEntity<ModifyUserResponse> getModifyUser()
+    {
+
+        List<UserDTO> userDTOS = modifyUserRepo.findAll()
+                .stream()
+                .map(this:: modifyDataIntoDTO)
+                .collect(Collectors.toList());
+
+        ModifyUserResponse  modifyUserResponse = new ModifyUserResponse();
+        modifyUserResponse.setListModifyUser(userDTOS);
+
+        return new ResponseEntity<>(modifyUserResponse,HttpStatus.OK);
+    }
+
+    private UserDTO modifyDataIntoDTO(ModifyUser modifyUser)
+    {
+        // create instance of user dto class
+        UserDTO user =  new UserDTO();
+
+        // set values in dto from user
+        user.setId(modifyUser.getId());
+        user.setUserName(modifyUser.getUserName());
+        user.setPan(modifyUser.getPan());
+        user.setPhoneNumber(modifyUser.getPhoneNumber());
+        user.setEmail(modifyUser.getEmail());
+
+        return user;
+    }
+
+    @Override
+    public ResponseEntity<Object> modifyUserByID(int id)
+    {
+        return new ResponseEntity<>("CHeck", HttpStatus.OK);
+    }
 
 
 

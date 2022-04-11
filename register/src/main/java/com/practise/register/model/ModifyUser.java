@@ -27,19 +27,11 @@ public class ModifyUser
     @Column(name = "pan")
     private int pan;
 
-    @Column(name = "password")
-    private String password;
-
-    @Column(name = "created_date")
-    private Date createdDate;
-
-    @Column(name = "created_by")
-    private String createdBy;
+    @Column(name = "is_approved")
+    private String isApproved;
 
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @OneToOne(fetch = FetchType.LAZY)
     private User user;
-
-
 
 }

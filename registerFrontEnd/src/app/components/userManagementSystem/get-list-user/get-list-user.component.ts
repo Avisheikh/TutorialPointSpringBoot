@@ -19,7 +19,6 @@ export class GetListUserComponent implements OnInit {
     (
       response =>
       {
-        console.log(response.userName);
         this.userList = response.getAllUser;
         console.log(this.userList);
       },
