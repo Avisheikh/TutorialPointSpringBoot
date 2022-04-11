@@ -17,7 +17,7 @@
         <td>{{item.email}}</td>
         <td>{{item.phoneNumber}}</td>
         <td>{{item.pan}}</td>
-        <td><a><i class="fa fa-eye text-dark" aria-hidden="true" style="cursor: pointer"></i></a></td>
+        <td><a [routerLink]="['/detail-modify-user', item.id]" ><i class="fa fa-eye text-dark" aria-hidden="true" style="cursor: pointer"></i></a></td>
       </tr>
     </tbody>
   </table>

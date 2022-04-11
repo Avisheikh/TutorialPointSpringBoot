@@ -12,7 +12,7 @@ export class DetailUserService {
   private baseTempUserURL = "http://localhost:8081/get_temp_user/";
   private baseUserURL = "http://localhost:8081/get_user/";
   private modifyBaseURL = "http://localhost:8081/create_modify_user/";
-  private detailModifyURL = "";
+  private detailModifyURL = "http://localhost:8081/get_modify_user/";
 
   constructor(private http:HttpClient) { }
 
@@ -30,5 +30,10 @@ export class DetailUserService {
   {
     console.log(user);
     return this.http.post<any>(this.modifyBaseURL + userId, user);
+  }
+
+  detailModifyUser(userId:number)
+  {
+    return this.http.get<any>(this.detailModifyURL + userId);
   }
 }

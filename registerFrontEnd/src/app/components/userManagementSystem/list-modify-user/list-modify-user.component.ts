@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {ListModifyUserService} from "../../../services/userManagementSystem/list-modify-user.service";
 import {UserResponse} from "../../../common/UserResponse";
+import {ListUserService} from "../../../services/userManagementSystem/list-user.service";
 
 @Component({
   selector: 'app-list-modify-user',
@@ -11,7 +11,7 @@ export class ListModifyUserComponent implements OnInit {
 
   userResponse: UserResponse[];
 
-  constructor(private modifyService:ListModifyUserService) { }
+  constructor(private modifyService:ListUserService) { }
 
   ngOnInit(): void {
 

@@ -454,10 +454,30 @@ public class UserServiceImpl implements com.practise.register.service.UserServic
     @Override
     public ResponseEntity<Object> modifyUserByID(int id)
     {
-        return new ResponseEntity<>("CHeck", HttpStatus.OK);
+        ModifyUserResponse modifyUserResponse = new ModifyUserResponse();
+        ResponseDto responseDto = new ResponseDto();
+        ModifyUser userResponse;
+
+        try
+        {
+            userResponse = modifyUserRepo.customFindById(id);
+
+            modifyUserResponse.setId(userResponse.getId());
+            modifyUserResponse.setUserName(userResponse.getUserName());
+            modifyUserResponse.setEmail(userResponse.getEmail());
+            modifyUserResponse.setPan(userResponse.getPan());
+            modifyUserResponse.setPhoneNumber(userResponse.getPhoneNumber());
+
+        }
+        catch (Exception exp)
+        {
+            logger.error(exp.getMessage());
+            responseDto.setResponseMessage("User list has not been found." + exp.getMessage());
+            responseDto.setResponseStatus(false);
+            return  new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
-
-
-
 
 }

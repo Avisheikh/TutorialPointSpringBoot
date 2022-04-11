@@ -7,6 +7,9 @@ import {LoginComponent} from "./components/userManagementSystem/login/login.comp
 import {GetListUserComponent} from "./components/userManagementSystem/get-list-user/get-list-user.component";
 import {GetDetailUserComponent} from "./components/userManagementSystem/get-detail-user/get-detail-user.component";
 import {ListModifyUserComponent} from "./components/userManagementSystem/list-modify-user/list-modify-user.component";
+import {
+  DetailModifyUserComponent
+} from "./components/userManagementSystem/detail-modify-user/detail-modify-user.component";
 
 
 
@@ -19,7 +22,8 @@ const routes: Routes =
       {path: "list-user", component:GetListUserComponent},
       {path: "detail-user/:id", component:GetDetailUserComponent},
       {path: "update-user/:id", component:GetDetailUserComponent},
-      {path: "list-modify-user", component:ListModifyUserComponent}
+      {path: "list-modify-user", component:ListModifyUserComponent},
+      {path: "detail-modify-user/:id", component:DetailModifyUserComponent}
   ];
 
 @NgModule({

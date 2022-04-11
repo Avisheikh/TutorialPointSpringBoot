@@ -1,5 +1,6 @@
 package com.practise.register.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -32,6 +33,7 @@ public class ModifyUser
 
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @OneToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private User user;
 
 }
