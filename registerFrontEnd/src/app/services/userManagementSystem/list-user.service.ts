@@ -6,12 +6,18 @@ import {HttpClient} from "@angular/common/http";
 })
 export class ListUserService {
 
-  private baseURL = "http://localhost:8081/get_temp_user";
+  private tempUserBaseURL = "http://localhost:8081/get_temp_user";
+  private userBaseURL = "http://localhost:8081/list_user";
 
   constructor(private http:HttpClient) { }
 
   getTempUser()
   {
-    return this.http.get<any>(this.baseURL);
+    return this.http.get<any>(this.tempUserBaseURL);
+  }
+
+  getUser()
+  {
+    return this.http.get<any>(this.userBaseURL);
   }
 }

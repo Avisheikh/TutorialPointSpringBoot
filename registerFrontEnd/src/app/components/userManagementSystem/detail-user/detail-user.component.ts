@@ -1,10 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute, ParamMap} from "@angular/router";
-import {GetTempUserList} from "../../../common/GetTempUserList";
-import {map, Observable, switchMap} from "rxjs";
-import {ListUserComponent} from "../list-user/list-user.component";
-import {ListUserService} from "../../../services/userManagementSystem/list-user.service";
-import {colors} from "@angular/cli/utilities/color";
+import {ActivatedRoute, ParamMap, Router} from "@angular/router";
 import {DetailUserService} from "../../../services/userManagementSystem/detail-user.service";
 import {TempUserResponse} from "../../../common/TempUserResponse";
 import {SaveUserService} from "../../../services/userManagementSystem/save-user.service";
@@ -20,10 +15,8 @@ export class DetailUserComponent implements OnInit {
   private id:string | null;
   tempUserResponse: TempUserResponse = new TempUserResponse();
 
-
-
   // read about this properly
-  constructor(private route:ActivatedRoute, private detailService:DetailUserService, private saveService:SaveUserService) { }
+  constructor(private route:ActivatedRoute, private detailService:DetailUserService, private saveService:SaveUserService, private router:Router) { }
 
   ngOnInit(): void {
 
@@ -56,10 +49,11 @@ export class DetailUserComponent implements OnInit {
     {
       console.log(response);
       alert(response.responseMessage);
+      this.router.navigate(['create-temp-user']);
     },
       error =>
       {
-        console.log(error.error)
+        console.log(error.error);
         alert(error.error);
       }
 

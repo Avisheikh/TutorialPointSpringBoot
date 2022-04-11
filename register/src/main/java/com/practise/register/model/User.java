@@ -1,6 +1,9 @@
 package com.practise.register.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Fetch;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -37,9 +40,13 @@ public class User
     @Column(name = "created_by")
     private String createdBy;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name="temp_user_id")
+    @JoinColumn(name="temp_user_id", referencedColumnName = "id")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private TempUser tempUser;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    private Authentication authentication;
 
     public User(){}
 

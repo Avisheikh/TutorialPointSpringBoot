@@ -8,7 +8,6 @@
         <th scope="col">Phone Number</th>
         <th scope="col">Pan</th>
         <th scope="col">Password</th>
-        <th scope="col">Action</th>
       </tr>
     </thead>
     <tbody>
@@ -18,7 +17,6 @@
         <td>{{item.email}}</td>
         <td>{{item.phoneNumber}}</td>
         <td>{{item.pan}}</td>
-        <td>{{item.password}}</td>
         <td><a [routerLink]="['/detail-temp-user',item.userId]"><i class="fa fa-eye text-dark" aria-hidden="true" style="cursor: pointer"></i></a></td>
       </tr>
     </tbody>

@@ -3,13 +3,19 @@ package com.practise.register.service_impl;
 import com.practise.register.dto.*;
 import com.practise.register.exception.DataIntegrityViolationException;
 import com.practise.register.exception.EmailExistException;
+import com.practise.register.exception.UserNotLoggedIn;
+import com.practise.register.model.Authentication;
 import com.practise.register.model.TempUser;
 import com.practise.register.model.User;
+import com.practise.register.repo.AuthenticationRepo;
 import com.practise.register.repo.TempUserRepo;
 import com.practise.register.repo.UserRepo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -25,32 +31,145 @@ public class UserServiceImpl implements com.practise.register.service.UserServic
     @Autowired
     private UserRepo userRepo;
 
+    @Autowired
+    private AuthenticationRepo authenticationRepo;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     private int getUserID;
 
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+
 
     @Override
-    public ResponseEntity<TempUserResponse> getTempUser(int id)
+    public ResponseEntity<Object> loginUser(LoginRequest loginRequest)
     {
-        Optional<TempUser> getUser = tempUserRepo.customFindById(id);
+        // create response object
+        ResponseDto responseDto = new ResponseDto();
 
-        return new ResponseEntity(getUser, HttpStatus.ACCEPTED);
+        // set custom find by email
+        Optional<User> user = userRepo.customFindByEmail(loginRequest.getEmail());
+        Authentication authenticationId = authenticationRepo.findById(1).get();
+
+        boolean decodePassword = passwordEncoder.matches(loginRequest.getPassword(), user.get().getPassword());
+
+        if(user.get().getEmail().equals(loginRequest.getEmail()) && decodePassword)
+        {
+            responseDto.setResponseMessage("Successful");
+            responseDto.setResponseStatus(true);
+            authenticationId.setAuthenticated(true);
+            authenticationId.setUser(user.get());
+            authenticationRepo.save(authenticationId);
+
+            logger.info("User successfully login in");
+        }
+        else
+        {
+            responseDto.setResponseMessage("Email or password is incorrect");
+            responseDto.setResponseStatus(false);
+
+            logger.error("Email or password is incorrect");
+        }
+
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
     @Override
-    public List<TempUser> getAllTempUser()
+    public ResponseEntity<Object> logout()
     {
-        return (List<TempUser>) tempUserRepo.findAll();
+        Authentication auth = authenticationRepo.findById(1).get();
+        ResponseDto responseDto = new ResponseDto();
+
+        try
+        {
+            auth.setAuthenticated(false);
+            authenticationRepo.save(auth);
+            responseDto.setResponseMessage("User has been successfully logged in");
+            responseDto.setResponseStatus(true);
+            logger.info("User successfully logged out");
+        }
+        catch (Exception e)
+        {
+            logger.error(e.getMessage());
+            responseDto.setResponseStatus(false);
+        }
+
+        return new ResponseEntity<>(responseDto,HttpStatus.ACCEPTED);
 
     }
 
+    @Override
+    public ResponseEntity<Object> createTempUserDTO(TempUserRequest requestTempUser) {
+
+        ResponseDto responseDto=new ResponseDto();
+        TempUser tempUser = null;
+
+        // check if user is authenticated or not
+        if(!authenticationRepo.is_authentication())
+        {
+            logger.error("User has not been logged in");
+            throw new UserNotLoggedIn();
+        }
+
+        // check email is unique or not
+        if(tempUserRepo.checkEmailExist(requestTempUser.getEmail()) == 1 || userRepo.checkEmailExist(requestTempUser.getEmail()) == 1)
+        {
+            logger.error("Email was not unique.");
+            throw new EmailExistException("Email has already exists. Email should be unique");
+        }
+
+        // check phone number is unique or not
+        else if(tempUserRepo.checkPhoneNumberExist(requestTempUser.getPhoneNumber()) == 1 || userRepo.checkPhoneNumberExist(requestTempUser.getPhoneNumber()) == 1)
+        {
+            responseDto.setResponseMessage("Phone number already exists");
+            responseDto.setResponseStatus(false);
+            logger.error("Phone number was not unique.");
+            return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+        }
+
+        else
+        {
+            try {
+
+                // created temp user class object
+                //TODO check using phone number and email if it is already exit or not
+                tempUser = new TempUser();
+
+                // setting the value
+                tempUser.setUserName(requestTempUser.getUserName());
+                tempUser.setEmail(requestTempUser.getEmail());
+                tempUser.setPhoneNumber(requestTempUser.getPhoneNumber());
+                tempUser.setPan(requestTempUser.getPan());
+                tempUser.setPassword(passwordEncoder.encode(requestTempUser.getPassword()));
+                tempUser.setIsApproved("false");
+                tempUser.setCreatedBy("abisehk");
+
+                // save to database
+                tempUserRepo.save(tempUser);
+                responseDto.setResponseMessage("Registration Success, Waiting for Approval");
+                responseDto.setResponseStatus(true);
+                logger.info("User has been created.");
+
+            }
+            catch (Exception e)
+            {
+                responseDto.setResponseMessage("Unable to process your request");
+                responseDto.setResponseStatus(false);
+                logger.error(e.getMessage());
+            }
+        }
+        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+    }
+
+    // map temp user response variables to temp user varibale
     @Override
     public ResponseEntity<TempUserResponse> getAllTempUserDTO()
     {
-        List<TempUserDto> tempUserDtos =  tempUserRepo
-                .findAll()
-                .stream()
-                .map(this::convertDataIntoDTO)
-                .collect(Collectors.toList());
+        List<TempUserDto> tempUserDtos =  tempUserRepo.findAll()
+                                                        .stream()
+                                                        .map(this::convertDataIntoDTO)
+                                                        .collect(Collectors.toList());
 
         TempUserResponse tempUserResponse = new TempUserResponse();
         tempUserResponse.setListTempUser(tempUserDtos);
@@ -69,61 +188,82 @@ public class UserServiceImpl implements com.practise.register.service.UserServic
         dto.setEmail(tempUser.getEmail());
         dto.setPhoneNumber(tempUser.getPhoneNumber());
         dto.setPan(tempUser.getPan());
-        dto.setPassword(tempUser.getPassword());
 
         return dto;
     }
 
+    // get user using native query
     @Override
-    public ResponseEntity<Object> createTempUserDTO(TempUserRequest requestTempUser) {
+    public ResponseEntity<TempUserResponse> getTempUser(int id)
+    {
+        Optional<TempUser> getUser=null;
 
-        ResponseDto responseDto=new ResponseDto();
-        TempUser tempUser = null;
-
-        if(tempUserRepo.checkEmailExist(requestTempUser.getEmail()) == 1 || userRepo.checkEmailExist(requestTempUser.getEmail()) == 1)
+        try
         {
-            throw new EmailExistException("Email has already exists. Email should be unique");
+            getUser = tempUserRepo.customFindById(id);
+            logger.info("List Temp User " + getUser);
+        }
+        catch (Exception exp)
+        {
+            logger.error(exp.getMessage());
         }
 
-        else if(tempUserRepo.checkPhoneNumberExist(requestTempUser.getPhoneNumber()) == 1 || userRepo.checkPhoneNumberExist(requestTempUser.getPhoneNumber()) == 1)
-        {
-            responseDto.setResponseMessage("Phone number already exists");
-            responseDto.setResponseStatus(false);
-            return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
-        }
 
-        else
-        {
-            try {
-
-                // created temp user class object
-                //TODO check using phone number and email if it is already exit or not
-                tempUser = new TempUser();
-
-                // setting the value
-                tempUser.setUserName(requestTempUser.getUserName());
-                tempUser.setEmail(requestTempUser.getEmail());
-                tempUser.setPhoneNumber(requestTempUser.getPhoneNumber());
-                tempUser.setPan(requestTempUser.getPan());
-                tempUser.setPassword(requestTempUser.getPassword());
-                tempUser.setIsApproved("false");
-                tempUser.setCreatedBy("abisehk");
-
-                // save to database
-                tempUserRepo.save(tempUser);
-                responseDto.setResponseMessage("Registration Success, Waiting for Approval");
-                responseDto.setResponseStatus(true);
-
-            }
-            catch (Exception e)
-            {
-                responseDto.setResponseMessage("Unable to process your request");
-                responseDto.setResponseStatus(false);
-            }
-        }
-        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+        return new ResponseEntity(getUser, HttpStatus.ACCEPTED);
     }
 
+    @Override
+    public ResponseEntity<UserResponse> listUser()
+    {
+        List<UserDTO> userDTOS = userRepo.findAll()
+                                            .stream()
+                                            .map(this:: userDataIntoDTO)
+                                            .collect(Collectors.toList());
+
+        logger.info("List " + userDTOS);
+        UserResponse userResponse = new UserResponse();
+        userResponse.setGetAllUser(userDTOS);
+        return new ResponseEntity<>(userResponse, HttpStatus.ACCEPTED);
+    }
+
+    private UserDTO userDataIntoDTO(User user)
+    {
+        // create instance of user dto class
+        UserDTO userDTO = new UserDTO();
+
+        // set values in dto from user
+        userDTO.setId(user.getId());
+        userDTO.setUserName(user.getUserName());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setPhoneNumber(user.getPhoneNumber());
+        userDTO.setPan(user.getPan());
+
+        return userDTO;
+    }
+
+    // get user id
+    @Override
+    public ResponseEntity<UserResponse> getUserByID(int id)
+    {
+        User user;
+        try
+        {
+            user = userRepo.customFindById(id);
+            logger.info("Found user " + user);
+
+        }
+        catch (Exception exp)
+        {
+            logger.error(exp.getMessage());
+            return new ResponseEntity(exp.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity(user, HttpStatus.ACCEPTED);
+
+    }
+
+
+    // Approve the temp user and save to user table
     @Override
     public ResponseEntity<Object> saveUser(int id, String userName)
     {
@@ -132,7 +272,12 @@ public class UserServiceImpl implements com.practise.register.service.UserServic
         ResponseDto responseDto = new ResponseDto();
         userName = "bishek";
 
-        System.out.println(id);
+        // check user is authenticated or not
+        if(!authenticationRepo.is_authentication())
+        {
+            logger.error("User has not been logged in");
+            throw new UserNotLoggedIn();
+        }
 
         //TODO use hibernate query instead of predefine query
         Optional<TempUser> getTempUser = tempUserRepo.customFindById(id);
@@ -142,12 +287,12 @@ public class UserServiceImpl implements com.practise.register.service.UserServic
         {
             responseDto.setResponseMessage("Could not approved because the checker and maker are same");
             responseDto.setResponseStatus(false);
+            logger.error("Checker and maker were same while approving");
             return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
         }
 
         try
         {
-
             user.setUserName(getTempUser.get().getUserName());
             user.setPassword(getTempUser.get().getPassword());
             user.setEmail(getTempUser.get().getEmail());
@@ -167,14 +312,22 @@ public class UserServiceImpl implements com.practise.register.service.UserServic
             responseDto.setResponseMessage("User has been approved successfully.");
             responseDto.setResponseStatus(true);
 
+            logger.info("Temp User has been successfully saved in user database.");
+
         }
         catch (Exception e)
         {
+            logger.error("Duplicate key has been found.");
             throw new DataIntegrityViolationException();
         }
 
-
         return new ResponseEntity<>(responseDto,HttpStatus.OK);
+    }
+
+    @Override
+    public List<TempUser> getAllTempUser()
+    {
+        return (List<TempUser>) tempUserRepo.findAll();
 
     }
 
@@ -232,30 +385,13 @@ public class UserServiceImpl implements com.practise.register.service.UserServic
     }
 
     @Override
-    public ResponseEntity<Object> loginUser(LoginRequest loginRequest)
+    public ResponseEntity<Object> modifyUser(ModifyUserRequest modifyUserRequest)
     {
-        // create response object
-        ResponseDto responseDto = new ResponseDto();
-
-        // set custom find by email
-        Optional<User> user = userRepo.customFindByEmail(loginRequest.getEmail());
-        System.out.println(user.get().getEmail());
-        System.out.println(loginRequest.getEmail());
-        System.out.println((user.get().getEmail()).equals(loginRequest.getEmail()));
-        System.out.println(user.get().getPassword() == loginRequest.getPassword());
-
-        if(user.get().getEmail().equals(loginRequest.getEmail()) && user.get().getPassword().equals(loginRequest.getPassword()))
-        {
-            responseDto.setResponseMessage("Successful");
-            responseDto.setResponseStatus(true);
-
-        }
-        else
-        {
-            responseDto.setResponseMessage("Email or password is incorrect");
-            responseDto.setResponseStatus(false);
-        }
-
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        return new ResponseEntity<>("check", HttpStatus.OK);
     }
+
+
+
+
+
 }

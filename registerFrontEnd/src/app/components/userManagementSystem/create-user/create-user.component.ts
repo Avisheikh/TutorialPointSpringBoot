@@ -3,6 +3,7 @@ import {FormControl, FormGroup} from "@angular/forms";
 import {CreateUserService} from "../../../services/userManagementSystem/create-user.service";
 import {CreateUser} from "../../../common/create-user";
 import {CreateUserErrorModel} from "../../../common/CreateUserErrorModel";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-create-user',
@@ -25,7 +26,7 @@ export class CreateUserComponent implements OnInit {
     }
   );
 
-  constructor(private createUserService:CreateUserService) { }
+  constructor(private createUserService:CreateUserService, private router:Router) { }
 
   ngOnInit(): void {
   }
@@ -51,7 +52,9 @@ export class CreateUserComponent implements OnInit {
       response =>
       {
 
-        alert(response.responseMessage)
+        alert(response.responseMessage);
+        this.router.navigate(['list-temp-user']);
+
       },
       error =>
       {

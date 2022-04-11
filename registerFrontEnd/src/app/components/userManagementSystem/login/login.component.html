@@ -1,0 +1,17 @@
+<div class="col-md-3 m-5 p-3" style=" position:relative; left: 40vw; border:black solid 1px">
+  <h4 class="d-flex justify-content-center mb-4 text-danger">Login</h4>
+  <form class="m-1 p-1" [formGroup] = "loginUserDetail" (ngSubmit)="onLogin()">
+    <div class="form-group">
+      <label>Email</label>
+      <input class="form-control mt-2" type="text" formControlName="email" required/>
+    </div>
+
+    <div class="form-group mt-5">
+      <label>Password</label>
+      <input class="form-control mt-2" type="password" formControlName="password" required/>
+    </div>
+
+    <input class="btn btn-primary mt-5" type="submit" value="submit" />
+
+  </form>
+</div>

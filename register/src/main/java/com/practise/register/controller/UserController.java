@@ -1,14 +1,14 @@
 package com.practise.register.controller;
 
+import com.practise.register.constants.PathConstant;
 import com.practise.register.dto.*;
-import com.practise.register.exception.DataIntegrityViolationException;
 import com.practise.register.model.TempUser;
 import com.practise.register.service.UserService;
-import org.apache.coyote.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Path;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -21,53 +21,84 @@ public class UserController
     @Autowired
     private UserService userServiceInterface;
 
-    // approve update data
-    @RequestMapping(value = "/approve_update/{id}", method = RequestMethod.GET)
-    public ResponseEntity<Object> approveUpdate(@PathVariable int id, String userName)
-    {
-        System.out.println(id);
-        return userServiceInterface.updateUser(id,userName);
 
+    // login user
+    @RequestMapping(value = PathConstant.login, method = RequestMethod.POST)
+    public ResponseEntity<Object> login(@RequestBody LoginRequest loginRequest)
+    {
+        return userServiceInterface.loginUser(loginRequest);
     }
 
-    // Update data to temp user
-    @RequestMapping(value = "/update_user/{id}", method = RequestMethod.POST)
-    public ResponseEntity<Object> updateTempUser(@RequestBody TempUserRequest tempUserRequest, @PathVariable int id)
+    // sign out user
+    @RequestMapping(value = PathConstant.logout, method = RequestMethod.GET)
+    public ResponseEntity<Object> signOut()
     {
-        System.out.println(tempUserRequest.getEmail());
-        return userServiceInterface.updateTempUser(id, tempUserRequest);
+        return userServiceInterface.logout();
     }
 
-
-    // approve user
-    @RequestMapping(value = "/approve_user", method = RequestMethod.POST)
-    public ResponseEntity<Object> approveUser(@RequestBody ApproveUserDto request, String userName)
+    // create temp user url
+    @RequestMapping(value = PathConstant.createUser, method = RequestMethod.POST)
+    public ResponseEntity<Object> createTempUserDTO(@Valid @RequestBody TempUserRequest tempUser)
     {
-        System.out.println(request.getId());
-        return userServiceInterface.saveUser(request.getId(),userName);
-    }
-
-    // get user data by id
-    @RequestMapping(value = "/get_temp_user/{id}", method = RequestMethod.GET)
-    public ResponseEntity<TempUserResponse> getTempUserById(@PathVariable int id)
-    {
-        return userServiceInterface.getTempUser(id);
+        return userServiceInterface.createTempUserDTO(tempUser);
     }
 
     // getting all temp user using temp dto url
-    @RequestMapping(value = "/get_temp_user", method = RequestMethod.GET)
+    @RequestMapping(value = PathConstant.listTempUser, method = RequestMethod.GET)
     public ResponseEntity<TempUserResponse> getAllTempUser()
     {
         return userServiceInterface.getAllTempUserDTO();
     }
 
-
-    // create temp user url
-    @RequestMapping(value = "/create_user", method = RequestMethod.POST)
-    public ResponseEntity<Object> createTempUserDTO(@Valid @RequestBody TempUserRequest tempUser)
+    // get user data by id
+    @RequestMapping(value = PathConstant.getTempUserById, method = RequestMethod.GET)
+    public ResponseEntity<TempUserResponse> getTempUserById(@PathVariable int id)
     {
-        return userServiceInterface.createTempUserDTO(tempUser);
+        return userServiceInterface.getTempUser(id);
     }
+
+    // approve user
+    @RequestMapping(value = PathConstant.approveUser, method = RequestMethod.POST)
+    public ResponseEntity<Object> approveUser(@RequestBody ApproveUserDto request, String userName)
+    {
+        return userServiceInterface.saveUser(request.getId(),userName);
+    }
+
+    // get user list
+    @RequestMapping(value = PathConstant.listUser, method = RequestMethod.GET)
+    public ResponseEntity<UserResponse> listUser()
+    {
+        return userServiceInterface.listUser();
+    }
+
+    @RequestMapping(value = PathConstant.getUser, method = RequestMethod.GET)
+    public ResponseEntity<UserResponse> getUser(@PathVariable int id)
+    {
+        return userServiceInterface.getUserByID(id);
+    }
+
+
+    // Update data to temp user
+    @RequestMapping(value = PathConstant.updateTempUser, method = RequestMethod.POST)
+    public ResponseEntity<Object> updateTempUser(@RequestBody TempUserRequest tempUserRequest, @PathVariable int id)
+    {
+        return userServiceInterface.updateTempUser(id, tempUserRequest);
+    }
+
+    // Save to modify table
+    @RequestMapping(value = PathConstant.createModifyUser, method = RequestMethod.POST)
+    public ResponseEntity<Object> createModifyUser(@RequestBody ModifyUserRequest modifyUserRequest,@PathVariable int id)
+    {
+        return userServiceInterface.modifyUser(modifyUserRequest);
+    }
+
+    // approve update data
+    @RequestMapping(value = "/approve_update/{id}", method = RequestMethod.GET)
+    public ResponseEntity<Object> approveUpdate(@PathVariable int id, String userName)
+    {
+        return userServiceInterface.updateUser(id,userName);
+    }
+
 
     // getting all temp user using temp no dto url
     @RequestMapping(value = "/get_temp", method = RequestMethod.GET)
@@ -76,16 +107,5 @@ public class UserController
         List<TempUser> tempUsers = userServiceInterface.getAllTempUser();
         return tempUsers;
     }
-
-    // login user
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ResponseEntity<Object> login(@RequestBody LoginRequest loginRequest)
-    {
-
-        return userServiceInterface.loginUser(loginRequest);
-    }
-
-
-
 
 }

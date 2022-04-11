@@ -19,7 +19,7 @@ export class ListUserComponent implements OnInit {
 
   ngOnInit(): void
   {
-    console.log()
+
     this.listTempUser.getTempUser().subscribe(
       response =>
       {
