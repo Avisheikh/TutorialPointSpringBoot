@@ -5,15 +5,20 @@ import com.example.pagination.DTO.PostResponse;
 import com.example.pagination.Entity.Post;
 import com.example.pagination.Service.PostService;
 import com.example.pagination.utils.AppConstants;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 @RestController
 @RequestMapping("/api/posts")
 public class PostController
 {
     private PostService postService;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     public PostController(PostService postService)
     {
@@ -37,5 +42,11 @@ public class PostController
     )
     {
         return postService.getAllPosts(pageNo, pageSize, sortBy, sorDir);
+    }
+
+    @GetMapping(value = "/get_post")
+    public ResponseEntity<Object> getPost()
+    {
+        return postService.getAllPost();
     }
 }

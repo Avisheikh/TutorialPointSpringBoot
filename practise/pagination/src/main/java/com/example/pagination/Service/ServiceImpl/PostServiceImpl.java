@@ -9,9 +9,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -82,6 +85,14 @@ public class PostServiceImpl implements PostService
         post.setDescription(postDto.getDescription());
         post.setContent(postDto.getContent());
         return post;
+    }
+
+    @Override
+    public ResponseEntity<Object> getAllPost()
+    {
+        List<Post> post = postRepository.findAll();
+
+        return new ResponseEntity<>(post, HttpStatus.OK);
     }
 
 }
