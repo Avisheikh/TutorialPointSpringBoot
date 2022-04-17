@@ -33,8 +33,6 @@ export class CreateUserComponent implements OnInit {
 
   onSubmit()
   {
-    console.log(this.submitted)
-
 
     // create user object
     let user = new CreateUser();

@@ -12,9 +12,6 @@ public class ClientApplication
 
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(DIConfig.class);
 
-        MyApplication app = context.getBean(MyApplication.class);
-
-        app.processMessage("Hi pak","dfjslk");
 
         context.close();
 

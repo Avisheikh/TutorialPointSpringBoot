@@ -30,21 +30,14 @@ export class GetDetailUserComponent implements OnInit {
   ngOnInit(): void {
 
     this.route.paramMap.subscribe(
-      (params:ParamMap) =>
-      {
-        console.log(params.get('id'));
+      (params:ParamMap) => {
         let id = Number(params.get('id'));
-
-        this.detailService.detailUser(id).subscribe
-        (
-          response =>
-          {
+        this.detailService.detailUser(id).subscribe (
+          response => {
             console.log(response);
             this.getUserDetail = response;
-          },
-          error =>
-          {
-            console.log(error);
+          }, error => {
+            alert(error);
           });
       });
   }

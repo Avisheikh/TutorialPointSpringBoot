@@ -12,21 +12,13 @@ export class ListUserComponent implements OnInit {
 
   tempUser: GetTempUserList[];
 
-  @Output()
-  rowClick = new EventEmitter();
-
   constructor(private listTempUser:ListUserService) { }
 
-  ngOnInit(): void
-  {
-
+  ngOnInit(): void {
     this.listTempUser.getTempUser().subscribe(
-      response =>
-      {
-        console.log(this.tempUser);
+      response => {
         this.tempUser=response.listTempUser;
-        console.log(this.tempUser);
-      }
+      }, error => {alert(error.error)}
     );
   }
 }

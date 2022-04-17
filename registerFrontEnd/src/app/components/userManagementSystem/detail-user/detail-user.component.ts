@@ -48,7 +48,7 @@ export class DetailUserComponent implements OnInit {
     this.saveService.saveUser(saveUser).subscribe(response =>
     {
       console.log(response);
-      alert(response.responseMessage);
+      alert(response);
       this.router.navigate(['create-temp-user']);
     },
       error =>

@@ -1,6 +1,5 @@
 package com.practise.register.repo;
 
-import com.practise.register.model.TempUser;
 import com.practise.register.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

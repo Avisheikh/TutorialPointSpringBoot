@@ -21,7 +21,6 @@ public class ProductServiceInterceptor implements HandlerInterceptor
 
         request.setAttribute("StartTime", startTime);
 
-
         return true;
     }
 
@@ -31,9 +30,6 @@ public class ProductServiceInterceptor implements HandlerInterceptor
         System.out.println("\n Post Handle method is calling");
         System.out.println("Request URL: " + request.getRequestURL());
 
-        // You can add attributes in the modelAndView
-        // and use that in the view page
-
     }
 
     @Override
@@ -41,12 +37,5 @@ public class ProductServiceInterceptor implements HandlerInterceptor
     {
         System.out.println("Request and Response is completed");
         System.out.println("-------LogInterception.afterCompletion");
-
-//        long startTime = (Long) request.getAttribute("startTime");
-//        long endTime = System.currentTimeMillis();
-//
-//        System.out.println("Request URL: " + request.getRequestURL());
-//        System.out.println("End Time: " + endTime);
-//        System.out.println("Time taken: " + (endTime-startTime));
     }
 }

@@ -15,16 +15,14 @@ export class SaveUserService {
 
   constructor(private  http:HttpClient) { }
 
-  saveUser(request:SaveUser): Observable<any>
+  saveUser(request:SaveUser)
   {
-    console.log(request.id);
     return this.http.post(this.baseURL, request);
   }
 
-  saveModifyUser(userId:number): Observable<any>
+  saveModifyUser(userId:number)
   {
     return this.http.get<any>(this.modifyApproveURL + userId);
   }
-
 
 }

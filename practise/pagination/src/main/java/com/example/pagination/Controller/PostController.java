@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 @RestController
-@RequestMapping("/api/posts")
+    @RequestMapping("/api/posts")
 public class PostController
 {
     private PostService postService;

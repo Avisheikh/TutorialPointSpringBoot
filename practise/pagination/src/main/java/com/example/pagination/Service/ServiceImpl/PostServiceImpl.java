@@ -42,19 +42,19 @@ public class PostServiceImpl implements PostService
     @Override
     public PostResponse getAllPosts(int pageNo, int pageSize, String sortBy, String sortDir)
     {
-        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
-                : Sort.by(sortBy).descending();
-
-        // create pageable instance
-        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
 
         Page<Post> posts = postRepository.findAll(pageable);
-
-        // get content for page object
         List<Post> listOfPosts = posts.getContent();
-
         List<PostDto> content = listOfPosts.stream().map(post -> mapToDTO(post)).collect(Collectors.toList());
 
+        PostResponse postResponse = getPostResponse(posts, content);
+
+        return postResponse;
+    }
+
+    private PostResponse getPostResponse(Page<Post> posts, List<PostDto> content) {
         PostResponse postResponse = new PostResponse();
         postResponse.setContent(content);
         postResponse.setPageNo(posts.getNumber());
@@ -62,7 +62,6 @@ public class PostServiceImpl implements PostService
         postResponse.setTotalElements(posts.getTotalElements());
         postResponse.setTotalPages(posts.getTotalPages());
         postResponse.setLast(posts.isLast());
-
         return postResponse;
     }
 

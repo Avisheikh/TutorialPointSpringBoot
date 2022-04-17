@@ -148,9 +148,7 @@ public class UserServiceImpl implements com.practise.register.service.UserServic
             {
                 logger.error(e.getMessage());
                 return new ResponseEntity<>(serverResponse("Unable to process your request", false), HttpStatus.BAD_REQUEST);
-            }
-        }
-    }
+            }}}
 
     private ResponseDto serverResponse(String message, boolean isSuccess) {
         ResponseDto responseDto = new ResponseDto();
@@ -192,10 +190,8 @@ public class UserServiceImpl implements com.practise.register.service.UserServic
     }
 
     private TempUserDto getTempUserDto(TempUser tempUser) {
-        // create instance of our temp user dto class
-        TempUserDto dto = new TempUserDto();
 
-        //set values in dto from temp user
+        TempUserDto dto = new TempUserDto();
         dto.setUserId(tempUser.getId());
         dto.setUserName(tempUser.getUserName());
         dto.setEmail(tempUser.getEmail());
@@ -254,7 +250,6 @@ public class UserServiceImpl implements com.practise.register.service.UserServic
         return userDTO;
     }
 
-    // get user id
     @Override
     public ResponseEntity<UserResponse> getUserByID(int id)
     {
@@ -272,7 +267,6 @@ public class UserServiceImpl implements com.practise.register.service.UserServic
         }
 
         return new ResponseEntity(user, HttpStatus.ACCEPTED);
-
     }
 
 
@@ -399,12 +393,13 @@ public class UserServiceImpl implements com.practise.register.service.UserServic
     public ResponseEntity<Object> modifyUser(ModifyUserRequest modifyUserRequest, int id)
     {
 
-        ModifyUser modifyUser = new ModifyUser();
+
         ResponseDto responseDto = new ResponseDto();
         User user = userRepo.customFindById(id);
 
         try
         {
+            ModifyUser modifyUser = new ModifyUser();
             modifyUser.setUserName(modifyUserRequest.getUserName());
             modifyUser.setEmail(modifyUserRequest.getEmail());
             modifyUser.setPhoneNumber(modifyUserRequest.getPhoneNumber());
@@ -511,7 +506,6 @@ public class UserServiceImpl implements com.practise.register.service.UserServic
             responseDto.setResponseStatus(false);
             responseDto.setResponseMessage("User can not be update");
         }
-
 
         return new ResponseEntity<>(responseDto,HttpStatus.OK);
     }
