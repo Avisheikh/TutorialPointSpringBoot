@@ -1,48 +1,48 @@
-package com.security.auth.medium_security.controller;
-
-import com.security.auth.medium_security.models.AuthReqBody;
-import com.security.auth.medium_security.models.AuthResBody;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-@RestController
-@RequestMapping("/auth")
-public class AuthController {
-
-    @Autowired
-    private AuthenticationManager authManager;
-
-    @PostMapping("/login")
-    public AuthResBody authentication(@RequestBody AuthReqBody authReqBody){
-        System.out.println("Auth Details: " + authReqBody);
-
-        UsernamePasswordAuthenticationToken token = new
-                UsernamePasswordAuthenticationToken(authReqBody.getUsername(), authReqBody.getPassword());
-
-        System.out.println("\nAuthentication Token Before Authentication: " + token);
-
-        Authentication authResult = authManager.authenticate(token);
-
-        System.out.println();
-        System.out.println("Authentication Token After Authentication: " + authResult);
-        System.out.println();
-
-        System.out.println("Authentication Token in Security Context: " + SecurityContextHolder.getContext().getAuthentication());
-
-        System.out.println();
-        if(authResult.isAuthenticated())
-        {
-            System.out.println("User is Authenticated");
-        }
-
-        return new AuthResBody(true);
-    }
-
-}
+//package com.security.auth.medium_security.controller;
+//
+//import com.security.auth.medium_security.models.AuthReqBody;
+//import com.security.auth.medium_security.models.AuthResBody;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.security.authentication.AuthenticationManager;
+//import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+//import org.springframework.security.core.Authentication;
+//import org.springframework.security.core.context.SecurityContextHolder;
+//import org.springframework.web.bind.annotation.PostMapping;
+//import org.springframework.web.bind.annotation.RequestBody;
+//import org.springframework.web.bind.annotation.RequestMapping;
+//import org.springframework.web.bind.annotation.RestController;
+//
+//@RestController
+//@RequestMapping("/auth")
+//public class AuthController {
+//
+//    @Autowired
+//    private AuthenticationManager authManager;
+//
+//    @PostMapping("/login")
+//    public AuthResBody authentication(@RequestBody AuthReqBody authReqBody){
+//        System.out.println("Auth Details: " + authReqBody);
+//
+//        UsernamePasswordAuthenticationToken token = new
+//                UsernamePasswordAuthenticationToken(authReqBody.getUsername(), authReqBody.getPassword());
+//
+//        System.out.println("\nAuthentication Token Before Authentication: " + token);
+//
+//        Authentication authResult = authManager.authenticate(token);
+//
+//        System.out.println();
+//        System.out.println("Authentication Token After Authentication: " + authResult);
+//        System.out.println();
+//
+//        System.out.println("Authentication Token in Security Context: " + SecurityContextHolder.getContext().getAuthentication());
+//
+//        System.out.println();
+//        if(authResult.isAuthenticated())
+//        {
+//            System.out.println("User is Authenticated");
+//        }
+//
+//        return new AuthResBody(true);
+//    }
+//
+//}
